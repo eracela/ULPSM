@@ -1,5 +1,4 @@
 /*
-  Racela edit for teensy
   ULP.cpp - Library for reading SPEC Sensors ULP.
   Created by David E. Peaslee, OCT 27, 2017.
   Released into the public domain.
@@ -27,7 +26,7 @@ ULP::ULP (int a, int b, float c) : _CPin(a), _TPin(b), _Sf(c) {
   _Lvolt = (_Ltemp + _Tb) * _Vsup / _Ts; //volts for cal of temp sensor
 }
 
-float ULP::_Vcc = 3.3; 	//voltage for ADC conversion of analogRead()	
+float ULP::_Vcc = 5.0; 	//voltage for ADC conversion of analogRead()	
 float ULP::_Vsup = 3.3;	//voltage of ULP supply for thermister, etc.
 
 int  ULP::getTemp(int n, char* U) { //get temperature using n as time in seconds for averaging, and U for units "F"/"C"
@@ -46,7 +45,7 @@ int  ULP::getTemp(int n, char* U) { //get temperature using n as time in seconds
   DEBUG_PRINT(", ");
   
   float Cnts = float (AC) / float(i);
-  float Volts = Cnts * _Vcc / 8021.0;
+  float Volts = Cnts * _Vcc / 1024.0;
 
   temp = (_Ts / _Vsup) * Volts - _Tb;
 
@@ -73,7 +72,7 @@ void ULP::setTSpan(float t, String R) { //advanced function for setting high or 
     i++;
   } while (millis() < etime);
   float Cnts = float (AC) / float(i);
-  float Volts = Cnts * _Vcc / 8021.0;
+  float Volts = Cnts * _Vcc / 1024.0;
 
   if (R == "HIGH") {
     _Htemp = t;
@@ -114,7 +113,7 @@ float  ULP::zero() { //function to zero sensor and get temperature at that zero 
   } while (millis() < etime);
   float Cnts = float (AC) / float(i);
 
-  float Vgas = Cnts * _Vcc * 1000.0 / 8021.0; //in mV
+  float Vgas = Cnts * _Vcc * 1000.0 / 1024.0; //in mV
   _Voff = Vgas - _Vref;
   _Tz = getTemp(10);
   return _Voff;
@@ -132,7 +131,7 @@ float ULP::getVgas(int n)	//gets the gas voltage from analog read. using n secon
   } while (millis() < etime);
   float Cnts = float (AC) / float(i);
 
-  float Vgas = Cnts * _Vcc * 1000.0 / 8021.0; //in mV
+  float Vgas = Cnts * _Vcc * 1000.0 / 1024.0; //in mV
 
   return Vgas;
 } //returns voltage at zero concentration
